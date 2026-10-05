@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>गाँव बिज़नेस सलाहकार 🇮🇳</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f2;
+      color: #222;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #166534, #15803d);
+      color: white;
+      padding: 22px 15px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 7px;
+    }
+
+    .header p {
+      font-size: 15px;
+      opacity: .95;
+    }
+
+    .container {
+      width: 95%;
+      max-width: 850px;
+      margin: 20px auto;
+    }
+
+    .info {
+      background: white;
+      padding: 18px;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.08);
+    }
+
+    .info h2 {
+      color: #166534;
+      margin-bottom: 8px;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .suggestions button {
+      border: 1px solid #15803d;
+      background: #f0fdf4;
+      color: #166534;
+      padding: 9px 13px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .suggestions button:hover {
+      background: #dcfce7;
+    }
+
+    .chat {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 3px 15px rgba(0,0,0,.08);
+      overflow: hidden;
+    }
+
+    .messages {
+      height: 430px;
+      overflow-y: auto;
+      padding: 18px;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 14px;
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 80%;
+      padding: 12px 15px;
+      border-radius: 15px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .assistant .bubble {
+      background: #f0fdf4;
+      color: #14532d;
+      border-bottom-left-radius: 4px;
+    }
+
+    .user .bubble {
+      background: #15803d;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid #ddd;
+    }
+
+    #question {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      padding: 13px 17px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    #send {
+      border: none;
+      background: #15803d;
+      color: white;
+      padding: 0 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    #send:hover {
+      background: #166534;
+    }
+
+    .typing {
+      color: #777;
+      font-style: italic;
+      padding: 5px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    @media(max-width:600px) {
+      .header h1 {
+        font-size: 23px;
+      }
+
+      .messages {
+        height: 400px;
+      }
+
+      .bubble {
+        max-width: 90%;
+      }
+
+      #send {
+        padding: 0 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>🇮🇳 गाँव बिज़नेस सलाहकार</h1>
+    <p>आपके गाँव और बजट के अनुसार व्यवसाय शुरू करने में AI की मदद</p>
+  </header>
+
+  <main class="container">
+
+    <section class="info">
+      <h2>नमस्ते! 👋</h2>
+      <p>
+        मैं आपका AI बिज़नेस सलाहकार हूँ। आप मुझसे गाँव में
+        व्यवसाय शुरू करने, लागत, कमाई, मार्केटिंग और योजना के बारे में
+        हिंदी में पूछ सकते हैं।
+      </p>
+
+      <div class="suggestions">
+        <button onclick="askQuestion('₹50,000 में गाँव में कौन सा व्यवसाय शुरू कर सकता हूँ?')">
+          ₹50,000 में बिज़नेस
+        </button>
+
+        <button onclick="askQuestion('गाँव में डेयरी व्यवसाय कैसे शुरू करें?')">
+          डेयरी व्यवसाय
+        </button>
+
+        <button onclick="askQuestion('गाँव में सबसे ज्यादा कमाई वाले व्यवसाय कौन से हैं?')">
+          ज्यादा कमाई वाले बिज़नेस
+        </button>
+
+        <button onclick="askQuestion('मेरे पास 2 एकड़ जमीन है, मैं कौन सा व्यवसाय कर सकता हूँ?')">
+          खेती से बिज़नेस
+        </button>
+      </div>
+    </section>
+
+    <section class="chat">
+
+      <div id="messages" class="messages">
+
+        <div class="message assistant">
+          <div class="bubble">
+            नमस्ते! 🙏
+
+            मैं आपका गाँव बिज़नेस सलाहकार हूँ।
+
+            आप अपना बजट, गाँव की स्थिति, जमीन, उपलब्ध संसाधन या अपनी रुचि बताइए। मैं आपको उपयुक्त व्यवसाय के बारे में जानकारी दूँगा।
+          </div>
+        </div>
+
+      </div>
+
+      <div class="input-area">
+        <input
+          id="question"
+          type="text"
+          placeholder="अपना सवाल लिखें..."
+          autocomplete="off"
+        >
+
+        <button id="send" onclick="sendMessage()">
+          भेजें
+        </button>
+      </div>
+
+    </section>
+
+    <div class="footer">
+      © 2026 गाँव बिज़नेस सलाहकार | AI द्वारा संचालित
+    </div>
+
+  </main>
+
+
+<script>
+
+  // ============================================
+  // GROQ API CONFIGURATION
+  // ============================================
+
+  const GROQ_API_KEY = "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";
+
+  const MODEL = "openai/gpt-oss-120b";
+
+  const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+
+  // ============================================
+  // SYSTEM PROMPT
+  // ============================================
+
+  const SYSTEM_PROMPT = `
+आप "गाँव बिज़नेस सलाहकार" नाम के AI सलाहकार हैं।
+
+आपका मुख्य उद्देश्य भारत के ग्रामीण क्षेत्रों में रहने वाले लोगों को
+व्यवसाय शुरू करने और बढ़ाने में सरल हिंदी में मदद करना है।
+
+आप इन विषयों पर सलाह दे सकते हैं:
+
+1. गाँव में छोटे व्यवसाय
+2. खेती आधारित व्यवसाय
+3. डेयरी व्यवसाय
+4. पशुपालन
+5. मुर्गी पालन
+6. बकरी पालन
+7. मछली पालन
+8. किराना दुकान
+9. मोबाइल रिपेयरिंग
+10. CSC / डिजिटल सेवा केंद्र
+11. खाद्य प्रसंस्करण
+12. आटा चक्की
+13. मसाला व्यवसाय
+14. अगरबत्ती व्यवसाय
+15. सिलाई और कपड़े
+16. ऑनलाइन व्यवसाय
+17. स्थानीय उत्पादों की बिक्री
+18. कृषि उपकरण किराये पर देना
+19. दूध और दुग्ध उत्पाद
+20. गाँव के लिए अन्य छोटे व्यवसाय
+
+हमेशा सरल और समझने योग्य हिंदी में उत्तर दें।
+
+यदि उपयोगकर्ता व्यवसाय पूछता है तो जहाँ संभव हो:
+
+- अनुमानित शुरुआती निवेश
+- आवश्यक सामान
+- संभावित ग्राहक
+- कमाई का संभावित तरीका
+- व्यवसाय शुरू करने के चरण
+- मार्केटिंग के तरीके
+- जोखिम
+- सावधानियाँ
+
+बताएँ।
+
+जहाँ सही जानकारी उपलब्ध न हो वहाँ निश्चित दावा न करें।
+लागत और कमाई को "अनुमानित" बताएं।
+
+सरकारी योजना, सब्सिडी, लाइसेंस या नियमों के बारे में बताते समय
+उपयोगकर्ता को संबंधित सरकारी विभाग/आधिकारिक वेबसाइट से वर्तमान नियम
+जाँचने की सलाह दें।
+
+किसी व्यवसाय में अवैध या खतरनाक गतिविधि की सलाह न दें।
+
+उत्तर व्यावहारिक, सकारात्मक और ग्रामीण उपयोगकर्ता के लिए आसान रखें।
+`;
+
+
+  // ============================================
+  // CHAT HISTORY
+  // ============================================
+
+  let conversation = [
+    {
+      role: "system",
+      content: SYSTEM_PROMPT
+    }
+  ];
+
+
+  // ============================================
+  // SEND MESSAGE
+  // ============================================
+
+  async function sendMessage() {
+
+    const input = document.getElementById("question");
+    const question = input.value.trim();
+
+    if (!question) return;
+
+    if (GROQ_API_KEY === "YOUR_GROQ_API_KEY") {
+      alert("कृपया पहले अपनी Groq API Key डालें।");
+      return;
+    }
+
+    addMessage(question, "user");
+
+    input.value = "";
+
+    conversation.push({
+      role: "user",
+      content: question
+    });
+
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.id = "typing";
+    typing.innerText = "AI सलाहकार सोच रहा है...";
+    document.getElementById("messages").appendChild(typing);
+
+    scrollChat();
+
+    try {
+
+      const response = await fetch(API_URL, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + GROQ_API_KEY
+        },
+
+        body: JSON.stringify({
+
+          model: MODEL,
+
+          messages: conversation,
+
+          temperature: 0.6,
+
+          max_tokens: 1500
+
+        })
+
+      });
+
+
+      const data = await response.json();
+
+      document.getElementById("typing")?.remove();
+
+
+      if (!response.ok) {
+
+        console.error(data);
+
+        addMessage(
+          "माफ़ कीजिए, अभी AI से जवाब प्राप्त नहीं हो पाया। कृपया API Key और इंटरनेट कनेक्शन जाँचें।",
+          "assistant"
+        );
+
+        return;
+      }
+
+
+      const answer =
+        data.choices?.[0]?.message?.content ||
+        "मुझे अभी कोई उत्तर नहीं मिला।";
+
+
+      conversation.push({
+        role: "assistant",
+        content: answer
+      });
+
+
+      addMessage(answer, "assistant");
+
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      document.getElementById("typing")?.remove();
+
+      addMessage(
+        "सर्वर से कनेक्शन नहीं हो पाया। कृपया कुछ देर बाद फिर कोशिश करें।",
+        "assistant"
+      );
+
+    }
+
+  }
+
+
+  // ============================================
+  // ADD MESSAGE TO CHAT
+  // ============================================
+
+  function addMessage(text, type) {
+
+    const messages = document.getElementById("messages");
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "message " + type;
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+
+    messages.appendChild(wrapper);
+
+    scrollChat();
+
+  }
+
+
+  // ============================================
+  // QUICK QUESTION
+  // ============================================
+
+  function askQuestion(question) {
+
+    document.getElementById("question").value = question;
+
+    sendMessage();
+
+  }
+
+
+  // ============================================
+  // AUTO SCROLL
+  // ============================================
+
+  function scrollChat() {
+
+    const messages = document.getElementById("messages");
+
+    messages.scrollTop = messages.scrollHeight;
+
+  }
+
+
+  // ============================================
+  // ENTER KEY
+  // ============================================
+
+  document
+    .getElementById("question")
+    .addEventListener("keydown", function(event) {
+
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+
+    });
+
+</script>
+
+</body>
+    </html>
